@@ -24,9 +24,13 @@ const Contact = () => {
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const serviceID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
-  const templateID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
-  const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+  const serviceID = process.env.PARCEL_EMAILJS_SERVICE_ID;
+  const templateID = process.env.PARCEL_EMAILJS_TEMPLATE_ID;
+  const publicKey = process.env.PARCEL_EMAILJS_PUBLIC_KEY;
+
+  console.log("service:", serviceID);
+  console.log("template:", templateID);
+  console.log("public:", publicKey);
 
   // Animation Variants
   const containerVariants = {
