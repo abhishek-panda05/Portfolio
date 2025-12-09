@@ -75,8 +75,7 @@ const Hero = () => {
   };
 
   const codeLines = [
-    { color: "text-purple-400", text: "#include", delay: 0 },
-    { color: "text-purple-400", text: "#include", delay: 0.1 },
+    { color: "text-purple-400", text: "#include <bits/stdc++.h>", delay: 0.1 },
     {
       color: "text-blue-400",
       text: "using namespace",
@@ -272,23 +271,6 @@ const Hero = () => {
               {social.icon}
             </motion.a>
           ))}
-        </motion.div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: 1.5,
-            duration: 0.8,
-            repeat: Infinity,
-            repeatType: "reverse",
-          }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-        >
-          <div className="w-6 h-10 border-2 border-gray-600 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-blue-500 rounded-full mt-2"></div>
-          </div>
         </motion.div>
       </motion.div>
     </section>

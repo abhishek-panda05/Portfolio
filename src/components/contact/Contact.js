@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import {
   FaGithub,
@@ -9,6 +8,7 @@ import {
   FaPhone,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+import emailjs from "@emailjs/browser";
 
 const Contact = () => {
   const ref = useRef(null);
@@ -22,14 +22,18 @@ const Contact = () => {
   });
 
   const [status, setStatus] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
+  const serviceID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+  const templateID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+  const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+
+  // Animation Variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
+      transition: { staggerChildren: 0.2 },
     },
   };
 
@@ -42,21 +46,51 @@ const Contact = () => {
     },
   };
 
+  // On Change Handler
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
+  // Submit Handler
   const handleSubmit = (e) => {
     e.preventDefault();
-    setStatus("Message sent successfully! I'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
 
-    setTimeout(() => setStatus(""), 5000);
+    if (!serviceID || !templateID || !publicKey) {
+      console.error("⛔ Missing EmailJS Environment Variables!");
+      setStatus("error");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const templateParams = {
+      from_name: formData.name,
+      from_email: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+      to_name: "Abhishek Panda",
+    };
+
+    emailjs
+      .send(serviceID, templateID, templateParams, publicKey)
+      .then(() => {
+        setStatus("success");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        setIsLoading(false);
+        setTimeout(() => setStatus(""), 5000);
+      })
+      .catch((error) => {
+        console.error("EmailJS Error:", error);
+        setStatus("error");
+        setIsLoading(false);
+        setTimeout(() => setStatus(""), 5000);
+      });
   };
 
+  // Contact Information
   const contactInfo = [
     {
       icon: <FaEnvelope />,
@@ -108,7 +142,7 @@ const Contact = () => {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {/* Section Title */}
+          {/* Title */}
           <motion.div variants={itemVariants} className="mb-16 text-center">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               <span className="text-blue-500">const</span>{" "}
@@ -121,21 +155,17 @@ const Contact = () => {
             </p>
           </motion.div>
 
+          {/* Grid Layout */}
           <div className="grid md:grid-cols-2 gap-12">
-            {/* Left Side - Contact Info */}
+            {/* Contact Info */}
             <motion.div variants={itemVariants} className="space-y-8">
-              <div>
-                <h3 className="text-3xl font-bold text-white mb-4">
-                  Get In Touch
-                </h3>
-                <p className="text-gray-400 mb-6">
-                  I'm currently available for freelance work and full-time
-                  opportunities. If you have a project that you want to get
-                  started or think you need my help, feel free to reach out!
-                </p>
-              </div>
+              <h3 className="text-3xl font-bold text-white">Get In Touch</h3>
+              <p className="text-gray-400">
+                I'm available for freelance work and full-time opportunities.
+                Feel free to reach out!
+              </p>
 
-              {/* Contact Information */}
+              {/* Info Cards */}
               <div className="space-y-4">
                 {contactInfo.map((info, index) => (
                   <motion.div
@@ -143,13 +173,13 @@ const Contact = () => {
                     whileHover={{ x: 10 }}
                     className="flex items-center gap-4 p-4 bg-black/50 rounded-lg border border-gray-800 hover:border-blue-500/50 transition-all duration-300"
                   >
-                    <span className="text-3xl text-blue-400">{info.icon}</span>
+                    <span className="text-3xl">{info.icon}</span>
                     <div>
                       <p className="text-gray-400 text-sm">{info.title}</p>
                       {info.link ? (
                         <a
                           href={info.link}
-                          className="text-white font-medium hover:text-blue-400 transition-colors"
+                          className="text-white font-medium hover:text-blue-400"
                         >
                           {info.value}
                         </a>
@@ -161,129 +191,122 @@ const Contact = () => {
                 ))}
               </div>
 
-              {/* Social Links */}
-              <div>
-                <h4 className="text-xl font-bold text-white mb-4">
-                  Connect With Me
-                </h4>
-                <div className="flex gap-4">
-                  {socialLinks.map((social, index) => (
-                    <motion.a
-                      key={index}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.1, y: -5 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`text-4xl ${social.color} transition-colors duration-300`}
-                      title={social.name}
-                    >
-                      {social.icon}
-                    </motion.a>
-                  ))}
-                </div>
+              {/* Socials */}
+              <h4 className="text-xl font-bold text-white">Connect With Me</h4>
+              <div className="flex gap-4">
+                {socialLinks.map((s, i) => (
+                  <motion.a
+                    key={i}
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.1, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`text-4xl ${s.color}`}
+                    title={s.name}
+                  >
+                    {s.icon}
+                  </motion.a>
+                ))}
               </div>
             </motion.div>
 
-            {/* Right Side - Contact Form */}
+            {/* Contact Form */}
             <motion.div variants={itemVariants}>
               <form
                 onSubmit={handleSubmit}
-                className="bg-black/50 backdrop-blur-sm rounded-xl p-8 border border-gray-800 space-y-6"
+                className="bg-black/50 backdrop-blur-sm p-8 rounded-xl border border-gray-800 space-y-6"
               >
+                {/* Name */}
                 <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-gray-300 font-medium mb-2"
-                  >
-                    Name
-                  </label>
+                  <label className="text-gray-300 font-medium">Name</label>
                   <input
                     type="text"
-                    id="name"
                     name="name"
+                    required
                     value={formData.name}
                     onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors duration-300"
+                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-blue-500"
                     placeholder="Your Name"
                   />
                 </div>
 
+                {/* Email */}
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-gray-300 font-medium mb-2"
-                  >
-                    Email
-                  </label>
+                  <label className="text-gray-300 font-medium">Email</label>
                   <input
                     type="email"
-                    id="email"
                     name="email"
+                    required
                     value={formData.email}
                     onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors duration-300"
+                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-blue-500"
                     placeholder="your.email@example.com"
                   />
                 </div>
 
+                {/* Subject */}
                 <div>
-                  <label
-                    htmlFor="subject"
-                    className="block text-gray-300 font-medium mb-2"
-                  >
-                    Subject
-                  </label>
+                  <label className="text-gray-300 font-medium">Subject</label>
                   <input
                     type="text"
-                    id="subject"
                     name="subject"
+                    required
                     value={formData.subject}
                     onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors duration-300"
+                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-blue-500"
                     placeholder="What's this about?"
                   />
                 </div>
 
+                {/* Message */}
                 <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-gray-300 font-medium mb-2"
-                  >
-                    Message
-                  </label>
+                  <label className="text-gray-300 font-medium">Message</label>
                   <textarea
-                    id="message"
                     name="message"
-                    value={formData.message}
-                    onChange={handleChange}
                     required
                     rows="5"
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors duration-300 resize-none"
-                    placeholder="Your message here..."
-                  ></textarea>
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-blue-500 resize-none"
+                    placeholder="Your message..."
+                  />
                 </div>
 
-                {status && (
+                {/* Status Messages */}
+                {status === "success" && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-center"
                   >
-                    {status}
+                    ✅ Message sent successfully!
                   </motion.div>
                 )}
 
+                {status === "error" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-center"
+                  >
+                    ❌ Failed to send message. Try again later.
+                  </motion.div>
+                )}
+
+                {/* Submit Button */}
                 <motion.button
                   type="submit"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full px-6 py-3 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors duration-300 shadow-lg shadow-blue-500/30"
+                  disabled={isLoading}
+                  whileHover={{ scale: isLoading ? 1 : 1.02 }}
+                  whileTap={{ scale: isLoading ? 1 : 0.98 }}
+                  className={`w-full px-6 py-3 rounded-lg font-medium text-white transition-colors duration-300 shadow-lg ${
+                    isLoading
+                      ? "bg-gray-600 cursor-not-allowed"
+                      : "bg-blue-500 hover:bg-blue-600 shadow-blue-500/30"
+                  }`}
                 >
-                  Send Message
+                  {isLoading ? "Sending..." : "Send Message"}
                 </motion.button>
               </form>
             </motion.div>

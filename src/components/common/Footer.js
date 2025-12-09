@@ -23,19 +23,13 @@ const Footer = () => {
     {
       name: "LinkedIn",
       icon: <FaLinkedin />,
-      url: "https://linkedin.com/in/yourprofile",
+      url: "https://linkedin.com/in/abhishekpanda05",
       color: "hover:text-blue-400",
-    },
-    {
-      name: "Twitter",
-      icon: <FaTwitter />,
-      url: "https://twitter.com/yourhandle",
-      color: "hover:text-sky-400",
     },
     {
       name: "Instagram",
       icon: <FaInstagram />,
-      url: "https://instagram.com/yourhandle",
+      url: "https://instagram.com/heyy.abhishek",
       color: "hover:text-pink-400",
     },
   ];
