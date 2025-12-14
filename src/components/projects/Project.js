@@ -27,6 +27,15 @@ const Projects = () => {
 
   const projects = [
     {
+      title: "Global Terrorist Analytics Dashboard",
+      description:
+        "A data analytics–driven dashboard designed to analyze global terrorism patterns using historical incident data, operational trends, and geographic factors. The project involves extensive data preprocessing, creation of analytical measures, and interactive visualizations to uncover insights related to attack frequency, affected regions, target types, and impact severity.",
+      image: "/assets/Terror.png",
+      technologies: ["Power BI", "DAX Queries", "M Queries", "KPI"],
+      githubLink: "https://github.com/abhishek-panda05/Power-Bi-Project",
+    },
+
+    {
       title: "Train Delay Forecasting System",
       description:
         "A machine learning–driven system for predicting real-time train delays based on historical scheduling data, operational patterns, and external factors. Includes data preprocessing, predictive modeling, and interactive analytics for better decision-making.",
