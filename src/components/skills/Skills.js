@@ -100,6 +100,11 @@ const Skills = () => {
           color: "from-orange-400 to-orange-600",
         },
         {
+          name: "Power BI",
+          level: 90,
+          color: "from-yellow-400 to-orange-600",
+        },
+        {
           name: "Statistics/ML",
           level: 75,
           color: "from-purple-400 to-purple-600",
