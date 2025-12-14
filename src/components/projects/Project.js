@@ -27,7 +27,7 @@ const Projects = () => {
 
   const projects = [
     {
-      title: "Global Terrorist Analytics Dashboard",
+      title: "Global Terrorism Analytics Dashboard",
       description:
         "A data analytics–driven dashboard designed to analyze global terrorism patterns using historical incident data, operational trends, and geographic factors. The project involves extensive data preprocessing, creation of analytical measures, and interactive visualizations to uncover insights related to attack frequency, affected regions, target types, and impact severity.",
       image: "/assets/Terror.png",
